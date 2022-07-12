@@ -1,33 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
+import Cards from './components/Cards/Cards';
+import Form from './components/Form/Form';
 
 const App = () => {
-  const [images, setImages] = useState();
-
-  useEffect(() => {
-    fetch('images?limit=10')
-      .then(res => res.json())
-      .then(data => {
-        console.log('Success:', data);
-        setImages(data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }, []);
-
   return (
-    <div className='app'>
-      {
-        images && images.map(img => (
-          <div key={img.id} >
-            <img src={`${img.url}.jpg`} alt=''/>
-            <img src={`${img.user.profile_image}.webp`} alt=''/>
-          </div>
-        ))
-      }
+    <div>
+      <nav className='navBar'>
+        <Link to='/'>HOME</Link>
+        <Link to='/form'>FORM</Link>
+      </nav>
+      <Routes>
+        <Route path='/' element={<Cards />} />
+        <Route path='/form' element={<Form />} />
+      </Routes>
     </div>
   );
-}
+};
 
 export default App;

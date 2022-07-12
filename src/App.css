@@ -1,0 +1,40 @@
+:root {
+  --color-red: #d53e33;
+  --color-blue: #377af5;
+  --color-green: #399953;
+  --color-yellow: #fbb300;
+  --rainbow-width: 200%;
+  --rainbow-height: 200%;
+  --rainbow-after-width: calc(100% - 12px);
+  --rainbow-after-height: calc(100% - 12px);
+}
+
+html,
+body {
+  background: '#fafafa';
+  background-size: 0.75em 100%, 100% 100%;
+  background-attachment: fixed;
+  align-items: center;
+  font-family: 'roboto' !important;
+}
+
+.navBar {
+  width: 100%;
+  text-align: center;
+  margin: 30px 0 15px 0;
+}
+
+.navBar a {
+  text-decoration: none;
+  padding: 5px;
+  margin: 0 10px;
+}
+
+.user-info__avatar {
+  vertical-align: middle;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin-right: 10px;
+  width: auto;
+}

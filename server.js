@@ -8,11 +8,14 @@ const randomInterval = (min, max) => {
 };
 
 app.get('/images', ({ query }, res) => {
-  const i = (query.limit) ? images.slice(0, parseInt(query.limit)) : images;
+  const i = query.limit ? images.slice(0, parseInt(query.limit)) : images;
 
-  setTimeout(() => {
-    return res.status(200).json(i);
-  }, randomInterval(500, 1500));
+  setTimeout(
+    () => {
+      return res.status(200).json(i);
+    },
+    query.isThrottling === 'true' ? randomInterval(500, 1500) : 0
+  );
 });
 
 app.listen(5000, () => {

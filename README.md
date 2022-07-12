@@ -1,78 +1,69 @@
 
 # Motorway UI Test
 
-
-Welcome to the Motorway UI technical test. This test focuses on user experience, and your skills with HTML, CSS, a11y and leveraging browser APIs.
-
-
-## Set up
-
-This repo is a slightly modified Create React App and an Express server which serves a JSON feed of images.
-
-- Clone the repo and run `npm install`
-
-- `npm run serve` will run the server
-
-- in another terminal window `npm run start` will start CRA
-
-After this, CRA will open a tab with the app running, usually `localhost:3000`. If you look in `src/App.js` you'll see the API call to the server is already made and will console log out the results.
-
-#### Note
-
-- The server and CRA are watching the relevant files and will hot reload if any changes are made.
-
-- Feel free to modify or install whatever code you feel is necessary. If installing packages which are wrappers for native browsers APIs please leave a comment explaining why.
-
-
 ## Tasks
 
 ### 1. UI development
 
-Create a responsive UI to display the images returned by the API.
+I created the responsive UI for rendering the images returned by the API. Both Desktop and Mobile version also has single column of cards with grid layout in CSS. Each card is constructed by user profile picture, username and the car image. All the UI components are styled by CSS purely and only webp images are used on the home page to have faster  speed for initial page loading.
 
-The aim is to demonstrate your experience and knowledge of HTML, CSS, JS and React features; and demonstrate creative thinking in how images can be presented and manipulated.
+If user hovers on the card that will have the animation to enlarge the card. If user clicks on the card, it will pop up the overlay for reviewing the full size image with jpg format and has the user info (likes, location, total photos etc) and the image meta data (likes, description etc) on the panel at right hand side. User can also apply the effects such as blur, brightness, contrast to the image with the range inputs when reviewing the image. Click on the area that out of the image and panel for dismiss the overlay.
 
-Images aren't optimised and their dimensions are varied, there are .jpg and .webp versions on s3, so you will need to take this into account.
-
-#### Inspiration:
-
-https://twitter.com/andybarefoot/status/1251844621262602242
-
-http://www.artist-developer.com/
-
-#### Some ideas to get you started:
-
-Resizable thumbnails
-
-Modal to review full size images
-
-Image effects or filters
+<img src="./public/home.jpeg" alt="home" width='500' />
+<img src="./public/overlay.jpeg" alt="overlay" width='500' />
 
 
 ### 2. Performance
 
-The API that is returning images is rather slow. Show how it can be sped up, and show how you would measure the improvement in performance.
+#### Optimizations of loading images
+1. **Load webp instead of jpg for the landing page.** Webp image have smaller size typically. For example: m3m-lnR90uM.jpg 808kb vs 683 kb encoded size. User can review the full size jpg images on the overlay
+
+**With webp**
+
+<img src="./public/with-webp.png" alt="webp" width='500' />
+
+**With jpg**
+
+<img src="./public/with-jpg.png" alt="jpg" width='500' />
+
+2. **Lazy loading the images** - allow the images to wait with download until user scrolls down to them, it can shorten page initialization. It can be verified by checking the network tab in Chrome console to fetch the new image when scroll to certain position.
+
+<img src="./public/fetch_new_image.png" alt="fetch new image" width='500' />
+
+3. **Placeholder gif for every image** - every image have the placeholder gif when waiting for appearing on the UI and we get the placeholder gif from public folder at the same host to give the user a sense of fast loading and will be displayed very soon. If error is happened when fetching the image, we will fall back to another error gif.
+
+<img src="./public/loader.gif" alt="jpg" width='200' />
+
+**placeholder gif for loading image**
+
+4. As I noticed there is the timeout setting on the server endpoint and I guess it is simulating the slow network environment. This force me to think about how or what we can optimize under the slow network. For real world scenario and if the target audiences are global people, we should setup CDN on cloud service provider to accelerate the image delivery across different regions instead of fetching from original bucket. We can also setup monitoring dashboard to keep track of the response time, latency and the availability of the servers. I passed 1 more queryString **isThrottling** to endpoint GET /images and the value is 'false' to disable the throttling.
+
+#### Speed tests for loading images
+
+I used Chrome Version 103.0.5060.114 to run the performance tests at the Chrome console and each round of test is emptied cache and hard reloaded. They are loaded from the same size of the browser window and same computer for making the comparison as fair as possible. The loading time is contributed by network transfer and image processing. The measurement is focused on the initial load of the car image list.
+
+|                | Old Implementation    | New Implementation      |
+|----------------------------------------------|--------|----------|
+| The longest duration to load the image - 1st | 2680ms | 969.53ms |
+| The longest duration to load the image - 2nd | 2610ms | 776.71ms |
+| The longest duration to load the image - 3rd | 2900ms | 878.59ms |
 
 
 ### 3. Forms
 
-One of the oldest yet trickiest parts of web development is forms, so we’d like to see how you handle them.
+I installed package react-router-dom for routing between [home page](http://localhost:3000) and the [form page http://localhost:3000/form](http://localhost:3000/form). We can navigate with navigation bar at the top of the pages. On the form page, user has to pass the client side validations on each input before the form submission. If the input is not valid, error message will be shown under the input field in red color. Otherwise, will open browser alert to display submitted values.
 
-Add a form to your app with the following fields. The form doesn't need to submit to anywhere, but must validate on the client.
+<img src="./public/form.jpeg" alt="form" width='500' />
 
-- [ ] Name
-- [ ] Email
-- [ ] Date of birth
-- [ ] Favourite colour
-- [ ] Salary (using a range input)
+#### Assumptions for the validations
+1. Name - cannot empty or empty string and the name cannot be longer than 100 letters
+2. Email - cannot empty or any kind of falsy value and must has correct email format
+3. Data of birth - cannot empty, must be in right date format and not in the future date
+4. Favourite of color - no validation as using standard color input and allocated default value `#5469D4`
+5. Salary - no validation as using standard range input and allocated default value `0`
 
+## My Notes
 
-## Time allowed
+I would like saying thank you to give me the opportunity for taking this test and a lot of fun to implement it. And it helps me to review the fundamental knowledge of HTML/CSS/JS and also learn a lot during the process. I tried my best and hope you like the result.
 
-We appreciate that your time is valuable and recommend you not spend more than 2 hours on these tasks.
-
-
-## Notes
-
-The goal of the test is to prove your understanding of the concepts of modern HTML/CSS/JS, but not to produce something production ready or pixel perfect.
-Your work will be tested in the browser of your choice, so please specify this when submitting. This can include pre-release browsers such as Chrome Canary or Safari Technology Preview if you want to work with experimental features.
+If you have any questions or comments, please do not hesitate to contact me. Cheers.
